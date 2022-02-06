@@ -129,7 +129,7 @@ final class RunTasks
 
     private function updateComposerInfos(): void
     {
-        $gitHubUrl = sprintf('https://github.com/kaisekidev/wp-%s', $this->moduleName);
+        $gitHubUrl = sprintf('https://github.com/kaisekidev/kaiseki-wp-%s', $this->moduleName);
         $this->modifyComposerJson(
             function (array $json) use ($gitHubUrl): array {
                 $json['name'] = $this->composerPackageName;
