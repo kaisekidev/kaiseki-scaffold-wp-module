@@ -122,8 +122,8 @@ final class RunTasks
         $this->removeUnusedComposerCommands();
         $this->fixAutoload();
         $this->searchAndReplaceFiles();
-        $this->activateDistFiles();
         $this->deleteUnusedFiles();
+        $this->activateDistFiles();
         $this->moveScaffoldFiles();
     }
 
