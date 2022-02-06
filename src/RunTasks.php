@@ -11,13 +11,22 @@ use LogicException;
 use function array_filter;
 use function basename;
 use function dirname;
+use function file_get_contents;
+use function file_put_contents;
 use function in_array;
 use function is_array;
+use function json_decode;
+use function json_encode;
+use function preg_match;
 use function preg_replace_callback;
+use function rename;
+use function rmdir;
 use function sprintf;
 use function str_repeat;
 use function str_replace;
 use function strlen;
+use function substr;
+use function unlink;
 
 use const ARRAY_FILTER_USE_KEY;
 use const JSON_PRETTY_PRINT;
@@ -60,7 +69,7 @@ final class RunTasks
         $moduleName = self::guessModuleName();
         /** @var string $moduleName */
         $moduleName = $io->askAndValidate(
-            \Safe\sprintf('Module name (kaiseki/wp-*) [default: %s]: ', $moduleName),
+            sprintf('Module name (kaiseki/wp-*) [default: %s]: ', $moduleName),
             [self::class, 'validateModuleName'],
             null,
             $moduleName
@@ -68,7 +77,7 @@ final class RunTasks
         $moduleNamespace = (new DashToCamelCase())->filter($moduleName);
         /** @var string $moduleNamespace */
         $moduleNamespace = $io->askAndValidate(
-            \Safe\sprintf('Module namespace (Kaiseki\\WordPress\\*) [default: %s]: ', $moduleNamespace),
+            sprintf('Module namespace (Kaiseki\\WordPress\\*) [default: %s]: ', $moduleNamespace),
             [self::class, 'validateModuleNamespace'],
             null,
             $moduleNamespace
@@ -79,8 +88,8 @@ final class RunTasks
     public static function validateModuleName(string $moduleName): string
     {
         // @see https://getcomposer.org/doc/04-schema.md#name
-        if (\Safe\preg_match('/^[a-z0-9](([_.]?|-{0,2})[a-z0-9]+)*$/', $moduleName) !== 1) {
-            throw new LogicException(\Safe\sprintf('%s is not a valid package name.', $moduleName));
+        if (preg_match('/^[a-z0-9](([_.]?|-{0,2})[a-z0-9]+)*$/', $moduleName) !== 1) {
+            throw new LogicException(sprintf('%s is not a valid package name.', $moduleName));
         }
         return $moduleName;
     }
@@ -88,8 +97,8 @@ final class RunTasks
     public static function validateModuleNamespace(string $namespace): string
     {
         // Starts with upper case, then lower case, then backslash, then upper case, then lower case, repeatable
-        if (\Safe\preg_match('/^(?:[A-Z]{1}[a-zA-Z]*(?:\\\\(?![a-z]))?)+[a-zA-Z]$/', $namespace) !== 1) {
-            throw new LogicException(\Safe\sprintf('%s is not a valid package name.', $namespace));
+        if (preg_match('/^(?:[A-Z]{1}[a-zA-Z]*(?:\\\\(?![a-z]))?)+[a-zA-Z]$/', $namespace) !== 1) {
+            throw new LogicException(sprintf('%s is not a valid package name.', $namespace));
         }
         return $namespace;
     }
@@ -120,7 +129,7 @@ final class RunTasks
 
     private function updateComposerInfos(): void
     {
-        $gitHubUrl = \Safe\sprintf('https://github.com/kaiseki/wp-%s', $this->moduleName);
+        $gitHubUrl = sprintf('https://github.com/kaiseki/wp-%s', $this->moduleName);
         $this->modifyComposerJson(
             function (array $json) use ($gitHubUrl): array {
                 $json['name'] = $this->composerPackageName;
@@ -176,9 +185,9 @@ final class RunTasks
                 unset($json['autoload-dev']['psr-4']['Kaiseki\\Test\\Functional\\WordPress\\ModuleName\\']);
                 unset($json['autoload-dev']['psr-4']['Kaiseki\\Test\\Unit\\WordPress\\ModuleName\\']);
                 $json['autoload']['psr-4']['Kaiseki\\WordPress\\' . $this->moduleNamespace . '\\'] = 'src';
-                $devFunctional = \Safe\sprintf('Kaiseki\\Test\\Functional\\WordPress\\%s\\', $this->moduleNamespace);
+                $devFunctional = sprintf('Kaiseki\\Test\\Functional\\WordPress\\%s\\', $this->moduleNamespace);
                 $json['autoload-dev']['psr-4'][$devFunctional] = 'tests/functional';
-                $devUnit = \Safe\sprintf('Kaiseki\\Test\\Unit\\WordPress\\%s\\', $this->moduleNamespace);
+                $devUnit = sprintf('Kaiseki\\Test\\Unit\\WordPress\\%s\\', $this->moduleNamespace);
                 $json['autoload-dev']['psr-4'][$devUnit] = 'tests/unit';
                 return $json;
             }
@@ -188,24 +197,24 @@ final class RunTasks
     private function deleteUnusedFiles(): void
     {
         foreach (self::UNUSED_FILES as $filename) {
-            \Safe\unlink($filename);
+            unlink($filename);
         }
     }
 
     private function activateDistFiles(): void
     {
         foreach (self::DIST_FILES as $filename) {
-            $newName = \Safe\substr($filename, 0, -5);
-            \Safe\rename($filename, $newName);
+            $newName = substr($filename, 0, -5);
+            rename($filename, $newName);
         }
     }
 
     private function moveScaffoldFiles(): void
     {
-        \Safe\rename(__DIR__ . '/../scaffold/ConfigProvider.php', __DIR__ . '/../src/ConfigProvider.php');
-        \Safe\rename(__DIR__ . '/../scaffold/FeatureName.php', __DIR__ . '/../src/FeatureName.php');
-        \Safe\rename(__DIR__ . '/../scaffold/FeatureNameFactory.php', __DIR__ . '/../src/FeatureNameFactory.php');
-        \Safe\rmdir(__DIR__ . '/../scaffold');
+        rename(__DIR__ . '/../scaffold/ConfigProvider.php', __DIR__ . '/../src/ConfigProvider.php');
+        rename(__DIR__ . '/../scaffold/FeatureName.php', __DIR__ . '/../src/FeatureName.php');
+        rename(__DIR__ . '/../scaffold/FeatureNameFactory.php', __DIR__ . '/../src/FeatureNameFactory.php');
+        rmdir(__DIR__ . '/../scaffold');
     }
 
     /**
@@ -217,9 +226,9 @@ final class RunTasks
             __DIR__ . '/../composer.json',
             static function (string $contents) use ($modify): string {
                 /** @var array<array-key, mixed> $composerArray */
-                $composerArray = \Safe\json_decode($contents, true);
+                $composerArray = json_decode($contents, true);
                 $composerArray = $modify($composerArray);
-                $composerJson = \Safe\json_encode($composerArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+                $composerJson = json_encode($composerArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                 return preg_replace_callback(
                     '/^ +/m',
                     fn($m): string => str_repeat(' ', strlen($m[0]) / 2),
@@ -234,9 +243,9 @@ final class RunTasks
      */
     private function modifyFile(string $filename, callable $modify): void
     {
-        $contents = \Safe\file_get_contents($filename);
+        $contents = file_get_contents($filename);
         $contents = $modify($contents);
-        \Safe\file_put_contents($filename, $contents);
+        file_put_contents($filename, $contents);
     }
 
     private function searchAndReplaceFiles(): void
