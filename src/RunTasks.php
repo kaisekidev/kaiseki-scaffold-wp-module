@@ -105,7 +105,7 @@ final class RunTasks
 
     private static function guessModuleName(): string
     {
-        return str_replace('kaiseki-', '', basename(dirname(__DIR__)));
+        return str_replace(['kaiseki-', 'wp-'], '', basename(dirname(__DIR__)));
     }
 
     public function __construct(string $moduleName, string $moduleNamespace)
@@ -129,7 +129,7 @@ final class RunTasks
 
     private function updateComposerInfos(): void
     {
-        $gitHubUrl = sprintf('https://github.com/kaiseki/wp-%s', $this->moduleName);
+        $gitHubUrl = sprintf('https://github.com/kaisekidev/wp-%s', $this->moduleName);
         $this->modifyComposerJson(
             function (array $json) use ($gitHubUrl): array {
                 $json['name'] = $this->composerPackageName;
