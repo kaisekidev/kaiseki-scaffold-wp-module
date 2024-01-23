@@ -2,3 +2,4 @@
 /composer.lock
 /infection-log.txt
 .phpunit.result.cache
+/test-module/

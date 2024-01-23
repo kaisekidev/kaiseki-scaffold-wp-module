@@ -42,6 +42,7 @@
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.21",
     "kaiseki/php-coding-standard": "dev-master",
+    "laminas/laminas-filter": "^2.34",
     "maglnet/composer-require-checker": "^3.5",
     "php-stubs/wordpress-stubs": "^6.2",
     "phpstan/extension-installer": "^1.3",
