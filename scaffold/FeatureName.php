@@ -18,7 +18,7 @@ final class FeatureName implements HookCallbackProviderInterface
         $this->notice = $notice;
     }
 
-    public function registerCallbacks(): void
+    public function registerHookCallbacks(): void
     {
         add_action('admin_notices', [$this, 'displayNotice']);
     }

@@ -12,8 +12,8 @@ final class ConfigProvider
     public function __invoke(): array
     {
         return [
-            'package-name' => [
-                'feature_notice' => 'Hello World',
+            'package_name' => [
+                'feature_notice' => 'foo',
             ],
             'hook' => [
                 'provider' => [
