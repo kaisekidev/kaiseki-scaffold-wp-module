@@ -13,12 +13,12 @@ final class ConfigProvider
     {
         return [
             'package_name' => [
-                'feature_notice' => 'foo',
+                'feature_notice' => 'kaiseki-scaffold-wp-module',
             ],
             'hook' => [
                 'provider' => [
                     FeatureName::class,
-                ]
+                ],
             ],
             'dependencies' => [
                 'aliases' => [],

@@ -255,14 +255,14 @@ final class RunTasks
             'module-name',
             "/test-module/\n",
             "package_name",
-            "\[\n\s*'feature_notice.*\n\s*\]",
+            "kaiseki-scaffold-wp-module",
         ];
         $replace = [
             $this->moduleNamespace,
             $this->composerPackageName,
             '',
             str_replace('-', '_', $this->moduleName),
-            '[]',
+            'wp-' . $this->moduleName,
         ];
         foreach (self::SEARCH_REPLACE_FILES as $filename) {
             $this->modifyFile($filename, fn(string $contents): string  => str_replace($search, $replace, $contents));
