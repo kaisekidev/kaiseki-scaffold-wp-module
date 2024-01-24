@@ -4,6 +4,7 @@
 
     <arg name="parallel" value="80"/>
 
+    <file>scaffold</file>
     <file>src</file>
     <file>tests</file>
 </ruleset>

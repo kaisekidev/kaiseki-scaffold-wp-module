@@ -11,22 +11,13 @@ use LogicException;
 use function array_filter;
 use function basename;
 use function dirname;
-use function file_get_contents;
-use function file_put_contents;
 use function in_array;
 use function is_array;
-use function json_decode;
-use function json_encode;
-use function preg_match;
 use function preg_replace_callback;
-use function rename;
-use function rmdir;
-use function sprintf;
 use function str_repeat;
 use function str_replace;
 use function strlen;
-use function substr;
-use function unlink;
+use function var_dump;
 
 use const ARRAY_FILTER_USE_KEY;
 use const JSON_PRETTY_PRINT;
@@ -52,6 +43,9 @@ final class RunTasks
     private const SEARCH_REPLACE_FILES = [
         __DIR__ . '/../.gitignore',
         __DIR__ . '/../README.md.dist',
+        __DIR__ . '/../.php-cs-fixer.php',
+        __DIR__ . '/../phpcs.xml',
+        __DIR__ . '/../phpstan.neon',
         __DIR__ . '/../phpunit.xml',
         __DIR__ . '/../scaffold/ConfigProvider.php',
         __DIR__ . '/../scaffold/FeatureName.php',
@@ -69,7 +63,7 @@ final class RunTasks
         $moduleName = self::guessModuleName();
         /** @var string $moduleName */
         $moduleName = $io->askAndValidate(
-            sprintf('Module name (kaiseki/wp-*) [default: %s]: ', $moduleName),
+            \Safe\sprintf('Module name (kaiseki/wp-*) [default: %s]: ', $moduleName),
             [self::class, 'validateModuleName'],
             null,
             $moduleName
@@ -77,7 +71,7 @@ final class RunTasks
         $moduleNamespace = (new DashToCamelCase())->filter($moduleName);
         /** @var string $moduleNamespace */
         $moduleNamespace = $io->askAndValidate(
-            sprintf('Module namespace (Kaiseki\\WordPress\\*) [default: %s]: ', $moduleNamespace),
+            \Safe\sprintf('Module namespace (Kaiseki\\WordPress\\*) [default: %s]: ', $moduleNamespace),
             [self::class, 'validateModuleNamespace'],
             null,
             $moduleNamespace
@@ -88,8 +82,8 @@ final class RunTasks
     public static function validateModuleName(string $moduleName): string
     {
         // @see https://getcomposer.org/doc/04-schema.md#name
-        if (preg_match('/^[a-z0-9](([_.]?|-{0,2})[a-z0-9]+)*$/', $moduleName) !== 1) {
-            throw new LogicException(sprintf('%s is not a valid package name.', $moduleName));
+        if (\Safe\preg_match('/^[a-z0-9](([_.]?|-{0,2})[a-z0-9]+)*$/', $moduleName) !== 1) {
+            throw new LogicException(\Safe\sprintf('%s is not a valid package name.', $moduleName));
         }
         return $moduleName;
     }
@@ -97,8 +91,8 @@ final class RunTasks
     public static function validateModuleNamespace(string $namespace): string
     {
         // Starts with upper case, then lower case, then backslash, then upper case, then lower case, repeatable
-        if (preg_match('/^(?:[A-Z]{1}[a-zA-Z]*(?:\\\\(?![a-z]))?)+[a-zA-Z]$/', $namespace) !== 1) {
-            throw new LogicException(sprintf('%s is not a valid package name.', $namespace));
+        if (\Safe\preg_match('/^(?:[A-Z]{1}[a-zA-Z]*(?:\\\\(?![a-z]))?)+[a-zA-Z]$/', $namespace) !== 1) {
+            throw new LogicException(\Safe\sprintf('%s is not a valid package name.', $namespace));
         }
         return $namespace;
     }
@@ -129,7 +123,7 @@ final class RunTasks
 
     private function updateComposerInfos(): void
     {
-        $gitHubUrl = sprintf('https://github.com/kaisekidev/kaiseki-wp-%s', $this->moduleName);
+        $gitHubUrl = \Safe\sprintf('https://github.com/kaisekidev/kaiseki-wp-%s', $this->moduleName);
         $this->modifyComposerJson(
             function (array $json) use ($gitHubUrl): array {
                 $json['name'] = $this->composerPackageName;
@@ -170,6 +164,7 @@ final class RunTasks
     {
         $this->modifyComposerJson(
             static function (array $json): array {
+                // @phpstan-ignore-next-line
                 unset($json['scripts']['post-create-project-cmd']);
                 return $json;
             }
@@ -180,14 +175,17 @@ final class RunTasks
     {
         $this->modifyComposerJson(
             function (array $json): array {
+                // @phpstan-ignore-next-line
                 unset($json['autoload']['psr-4']['Kaiseki\\WordPress\\ScaffoldModule\\']);
+                // @phpstan-ignore-next-line
                 unset($json['autoload']['psr-4']['Kaiseki\\WordPress\\ModuleName\\']);
                 unset($json['autoload-dev']['psr-4']['Kaiseki\\Test\\Functional\\WordPress\\ModuleName\\']);
                 unset($json['autoload-dev']['psr-4']['Kaiseki\\Test\\Unit\\WordPress\\ModuleName\\']);
+                // @phpstan-ignore-next-line
                 $json['autoload']['psr-4']['Kaiseki\\WordPress\\' . $this->moduleNamespace . '\\'] = 'src';
-                $devFunctional = sprintf('Kaiseki\\Test\\Functional\\WordPress\\%s\\', $this->moduleNamespace);
+                $devFunctional = \Safe\sprintf('Kaiseki\\Test\\Functional\\WordPress\\%s\\', $this->moduleNamespace);
                 $json['autoload-dev']['psr-4'][$devFunctional] = 'tests/functional';
-                $devUnit = sprintf('Kaiseki\\Test\\Unit\\WordPress\\%s\\', $this->moduleNamespace);
+                $devUnit = \Safe\sprintf('Kaiseki\\Test\\Unit\\WordPress\\%s\\', $this->moduleNamespace);
                 $json['autoload-dev']['psr-4'][$devUnit] = 'tests/unit';
                 return $json;
             }
@@ -197,24 +195,24 @@ final class RunTasks
     private function deleteUnusedFiles(): void
     {
         foreach (self::UNUSED_FILES as $filename) {
-            unlink($filename);
+            \Safe\unlink($filename);
         }
     }
 
     private function activateDistFiles(): void
     {
         foreach (self::DIST_FILES as $filename) {
-            $newName = substr($filename, 0, -5);
-            rename($filename, $newName);
+            $newName = \Safe\substr($filename, 0, -5);
+            \Safe\rename($filename, $newName);
         }
     }
 
     private function moveScaffoldFiles(): void
     {
-        rename(__DIR__ . '/../scaffold/ConfigProvider.php', __DIR__ . '/../src/ConfigProvider.php');
-        rename(__DIR__ . '/../scaffold/FeatureName.php', __DIR__ . '/../src/FeatureName.php');
-        rename(__DIR__ . '/../scaffold/FeatureNameFactory.php', __DIR__ . '/../src/FeatureNameFactory.php');
-        rmdir(__DIR__ . '/../scaffold');
+        \Safe\rename(__DIR__ . '/../scaffold/ConfigProvider.php', __DIR__ . '/../src/ConfigProvider.php');
+        \Safe\rename(__DIR__ . '/../scaffold/FeatureName.php', __DIR__ . '/../src/FeatureName.php');
+        \Safe\rename(__DIR__ . '/../scaffold/FeatureNameFactory.php', __DIR__ . '/../src/FeatureNameFactory.php');
+        \Safe\rmdir(__DIR__ . '/../scaffold');
     }
 
     /**
@@ -226,12 +224,12 @@ final class RunTasks
             __DIR__ . '/../composer.json',
             static function (string $contents) use ($modify): string {
                 /** @var array<array-key, mixed> $composerArray */
-                $composerArray = json_decode($contents, true);
+                $composerArray = \Safe\json_decode($contents, true);
                 $composerArray = $modify($composerArray);
-                $composerJson = json_encode($composerArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-                return preg_replace_callback(
+                $composerJson = \Safe\json_encode($composerArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+                return (string)preg_replace_callback(
                     '/^ +/m',
-                    fn($m): string => str_repeat(' ', strlen($m[0]) / 2),
+                    fn($m): string => str_repeat(' ', (int)(strlen($m[0]) / 2)),
                     $composerJson
                 );
             }
@@ -239,13 +237,14 @@ final class RunTasks
     }
 
     /**
+     * @param string                   $filename
      * @param callable(string): string $modify
      */
     private function modifyFile(string $filename, callable $modify): void
     {
-        $contents = file_get_contents($filename);
+        $contents = \Safe\file_get_contents($filename);
         $contents = $modify($contents);
-        file_put_contents($filename, $contents);
+        \Safe\file_put_contents($filename, $contents);
     }
 
     private function searchAndReplaceFiles(): void
@@ -256,14 +255,22 @@ final class RunTasks
             "/test-module/\n",
             "package_name",
             "kaiseki-scaffold-wp-module",
+            "!\s*- scaffold/!",
+            "!<file>scaffold</file>!",
+            "!\s*->in(__DIR__ . '/scaffold')!",
         ];
+
         $replace = [
             $this->moduleNamespace,
             $this->composerPackageName,
             '',
             str_replace('-', '_', $this->moduleName),
             'wp-' . $this->moduleName,
+            '',
+            '',
+            '',
         ];
+
         foreach (self::SEARCH_REPLACE_FILES as $filename) {
             $this->modifyFile($filename, fn(string $contents): string  => str_replace($search, $replace, $contents));
         }

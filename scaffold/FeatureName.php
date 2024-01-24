@@ -11,11 +11,8 @@ use function trim;
 
 final class FeatureName implements HookCallbackProviderInterface
 {
-    private string $notice;
-
-    public function __construct(string $notice)
+    public function __construct(private readonly string $notice)
     {
-        $this->notice = $notice;
     }
 
     public function registerHookCallbacks(): void
@@ -23,14 +20,18 @@ final class FeatureName implements HookCallbackProviderInterface
         add_action('admin_notices', [$this, 'displayNotice']);
     }
 
-    public function init(): void
+    public function displayNotice(): void
     {
         if (trim($this->notice) === '') {
             return;
         }
+        $notice = \Safe\sprintf(
+            __('Kaiseki module %s is active', 'kaiseki'),
+            $this->notice
+        );
         ?>
         <div class="notice notice-success is-dismissible">
-            <p><?= $this->notice; ?></p>
+            <p><?= $notice ?></p>
         </div>
         <?php
     }

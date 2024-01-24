@@ -9,7 +9,9 @@ $finder = new Finder();
 
 $finder
     ->in(__DIR__ . '/src')
+    ->in(__DIR__ . '/scaffold')
     ->files()
     ->name('*.php');
 
 return PhpCsFixerConfig::get($finder);
+

@@ -34,6 +34,7 @@
   },
   "require": {
     "php": "^8.1",
+    "composer/composer": "^2.6",
     "kaiseki/config": "dev-master",
     "kaiseki/wp-hook": "dev-master",
     "psr/container": "^1.1",
