@@ -27,7 +27,6 @@ use function str_replace;
 use function strlen;
 use function substr;
 use function unlink;
-use function var_dump;
 
 use const ARRAY_FILTER_USE_KEY;
 use const JSON_PRETTY_PRINT;
@@ -253,12 +252,7 @@ final class RunTasks
     private function modifyFile(string $filename, callable $modify): void
     {
         $contents = file_get_contents($filename);
-        if ($filename === __DIR__ . '/../phpstan.neon') {
-            var_dump();
-        }
         $contents = $modify($contents);
-        if ($filename === __DIR__ . '/../phpstan.neon') {
-        }
         file_put_contents($filename, $contents);
     }
 
