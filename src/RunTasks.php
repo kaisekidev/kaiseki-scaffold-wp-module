@@ -46,6 +46,7 @@ final class RunTasks
     ];
     private const DIST_FILES = [
         __DIR__ . '/../.github/workflows/checks.yml.dist',
+        __DIR__ . '/../.github/workflows/dispatch-docs-change.yml.dist',
         __DIR__ . '/../.gitattributes.dist',
         __DIR__ . '/../README.md.dist',
     ];
