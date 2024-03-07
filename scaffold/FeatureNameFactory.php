@@ -11,9 +11,9 @@ final class FeatureNameFactory
 {
     public function __invoke(ContainerInterface $container): FeatureName
     {
-        $config = Config::get($container);
+        $config = Config::fromContainer($container);
         return new FeatureName(
-            $config->string('package_name/feature_notice')
+            $config->string('package_name.feature_notice')
         );
     }
 }

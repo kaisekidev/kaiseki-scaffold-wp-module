@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Kaiseki\WordPress\ModuleName;
 
-use Kaiseki\WordPress\Hook\HookCallbackProviderInterface;
+use Kaiseki\WordPress\Hook\HookProviderInterface;
 
 use function add_action;
 use function trim;
 
-final class FeatureName implements HookCallbackProviderInterface
+final class FeatureName implements HookProviderInterface
 {
     public function __construct(private readonly string $notice)
     {
     }
 
-    public function registerHookCallbacks(): void
+    public function addHooks(): void
     {
         add_action('admin_notices', [$this, 'displayNotice']);
     }
