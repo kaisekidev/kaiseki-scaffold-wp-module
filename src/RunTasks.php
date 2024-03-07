@@ -53,7 +53,7 @@ final class RunTasks
     private const SEARCH_REPLACE_FILES = [
         __DIR__ . '/../.gitignore',
         __DIR__ . '/../README.md.dist',
-        __DIR__ . '/../.php-cs-fixer.php',
+        __DIR__ . '/../.php-cs-fixer.dist.php',
         __DIR__ . '/../phpcs.xml',
         __DIR__ . '/../phpstan.neon',
         __DIR__ . '/../phpunit.xml',
