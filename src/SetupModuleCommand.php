@@ -34,8 +34,10 @@ class SetupModuleCommand extends Command
     {
         $this->rootDir = realpath(__DIR__ . '/..');
         $this->outputDir =  $this->rootDir . '/output';
+        mkdir($this->outputDir, 0755, true);
 
         $question = $this->getHelper('question');
+
         $this
             ->askForType($input, $output, $question)
             ->askForModuleName($input, $output, $question)
