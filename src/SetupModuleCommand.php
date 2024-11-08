@@ -15,7 +15,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
-class CreateProjectCommand extends Command
+#[AsCommand(
+    name: 'setup-module',
+)]
+class SetupModuleCommand extends Command
 {
     private TypeEnum $type;
     private string $moduleName;
@@ -24,7 +27,7 @@ class CreateProjectCommand extends Command
     private string $repoUrl;
     private string $copyrightHolder;
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $question = $this->getHelper('question');
         $this
