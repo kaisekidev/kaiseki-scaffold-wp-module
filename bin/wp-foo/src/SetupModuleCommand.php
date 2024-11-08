@@ -17,7 +17,6 @@ use Symfony\Component\Console\Question\Question;
 
 #[AsCommand(
     name: 'app:setup-module',
-    description: 'Set up the module environment.'
 )]
 class SetupModuleCommand extends Command
 {
