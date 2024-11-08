@@ -22,6 +22,7 @@ use Symfony\Component\Console\Question\Question;
 class SetupModuleCommand extends Command
 {
     private TypeEnum $type;
+    private string $rootDir;
     private string $moduleName;
     private string $configBaseKey;
     private string $namespace;
@@ -30,6 +31,8 @@ class SetupModuleCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->rootDir = realpath(__DIR__ . '/..');
+        $this->outputDir =  $this->rootDir . '/output';
 
         $question = $this->getHelper('question');
         $this
@@ -46,8 +49,30 @@ class SetupModuleCommand extends Command
         $this->copyFiles(array_merge($sharedFiles, $typeFiles));
 
         $this->cleanUp();
+        $this->copyOutput();
+        $this->deleteDirectory($this->outputDir);
 
         return Command::SUCCESS;
+    }
+
+    private function copyOutput(): void
+    {
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->outputDir));
+
+        foreach ($iterator as $fileInfo) {
+            if ($fileInfo->isDir()) {
+                continue;
+            }
+
+            $destination = str_replace($this->outputDir, $this->rootDir, $fileInfo->getPathname());
+            $destinationDir = pathinfo($destination, PATHINFO_DIRNAME);
+
+            if (!is_dir($destinationDir)) {
+                mkdir($destinationDir, 0755, true);
+            }
+
+            rename($fileInfo->getPathname(), $destination);
+        }
     }
 
     /**
@@ -57,10 +82,8 @@ class SetupModuleCommand extends Command
      */
     private function cleanUp(): void
     {
-        $dir = realpath(__DIR__ . '/..');
-
-        foreach (array_diff(scandir($dir), array('..', '.')) as $name) {
-            if (is_file($dir . DIRECTORY_SEPARATOR . $name)) {
+        foreach (array_diff(scandir($this->rootDir), array('..', '.')) as $name) {
+            if (is_file($this->rootDir . DIRECTORY_SEPARATOR . $name)) {
                 unlink($name);
                 continue;
             }
@@ -69,31 +92,8 @@ class SetupModuleCommand extends Command
                 continue;
             }
 
-            $this->deleteDirectory($dir . DIRECTORY_SEPARATOR . $name);
-            var_dump($dir . DIRECTORY_SEPARATOR . $name);
+            $this->deleteDirectory($this->rootDir . DIRECTORY_SEPARATOR . $name);
         }
-        return;
-
-        $output = realpath(__DIR__ . '/../output');
-
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($output));
-
-        foreach ($iterator as $fileInfo) {
-            if ($fileInfo->isDir()) {
-                continue;
-            }
-
-            $destination = str_replace($output, $dir, $fileInfo->getPathname());
-            $destinationDir = pathinfo($destination, PATHINFO_DIRNAME);
-
-            if (!is_dir($destinationDir)) {
-                mkdir($destinationDir, 0755, true);
-            }
-
-            rename($fileInfo->getPathname(), $destination);
-        }
-
-        rmdir($output);
     }
 
     private function deleteDirectory(string $path): bool
