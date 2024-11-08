@@ -49,6 +49,16 @@ class SetupModuleCommand extends Command
             ->askForRepoUrl($input, $output, $question)
             ->askForCopyrightHolder($input, $output, $question);
 
+        $output->writeln([
+            'Module setup',
+            '============',
+            'Type: ' . ($this->type === TypeEnum::WORDPRESS ? 'WordPress' : 'Core'),
+            'Module name: ' . $this->moduleName,
+            'Config base key: ' . $this->configBaseKey,
+            'Namespace: ' . $this->namespace,
+            'Repository URL: ' . $this->repoUrl,
+        ]);
+
         $sharedFiles = $this->getAllFilesInDirectory($this->rootDir . '/templates/shared');
         $typeFiles = $this->getAllFilesInDirectory($this->rootDir . '/templates/' . $this->getTypeFolder());
 
