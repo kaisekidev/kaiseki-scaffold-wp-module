@@ -30,6 +30,7 @@ class SetupModuleCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+
         $question = $this->getHelper('question');
         $this
             ->askForType($input, $output, $question)
@@ -39,14 +40,68 @@ class SetupModuleCommand extends Command
             ->askForRepoUrl($input, $output, $question)
             ->askForCopyrightHolder($input, $output, $question);
 
-        var_dump(__DIR__);
-
         $sharedFiles = $this->getAllFilesInDirectory(__DIR__ . '/../templates/shared');
         $typeFiles = $this->getAllFilesInDirectory(__DIR__ . '/../templates/' . $this->getTypeFolder());
 
         $this->copyFiles(array_merge($sharedFiles, $typeFiles));
 
+        $this->cleanUp();
+
         return Command::SUCCESS;
+    }
+
+    /**
+     * Remove everything in "__DIR__ . /.." but "__DIR__ . /../output"
+     * then move everything from output to "__DIR__ . /.."
+     * then remove the empty output directory
+     */
+    private function cleanUp(): void
+    {
+        $dir = realpath(__DIR__ . '/..');
+
+        foreach (array_diff(scandir($dir), array('..', '.')) as $name) {
+            if (is_file($dir . DIRECTORY_SEPARATOR . $name)) {
+                unlink($name);
+                continue;
+            }
+
+            if (in_array($name, ['output'], true)) {
+                continue;
+            }
+
+            rmDir($dir . DIRECTORY_SEPARATOR . $name);
+        }
+
+        $output = realpath(__DIR__ . '/../output');
+
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
+
+        foreach ($iterator as $fileInfo) {
+            if (!$fileInfo->isDir()) {
+                continue;
+            }
+
+            var_dump($fileInfo->getPathname());
+        }
+
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($output));
+
+        foreach ($iterator as $fileInfo) {
+            if ($fileInfo->isDir()) {
+                continue;
+            }
+
+            $destination = str_replace($output, $dir, $fileInfo->getPathname());
+            $destinationDir = pathinfo($destination, PATHINFO_DIRNAME);
+
+            if (!is_dir($destinationDir)) {
+                mkdir($destinationDir, 0755, true);
+            }
+
+            rename($fileInfo->getPathname(), $destination);
+        }
+
+        rmdir($output);
     }
 
     private function copyFiles(array $paths): void
