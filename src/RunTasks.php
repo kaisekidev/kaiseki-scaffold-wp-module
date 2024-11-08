@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Kaiseki\WordPress\ScaffoldModule;
+namespace Kaiseki\ScaffoldModule;
 
-use Composer\Script\Event;
 use Laminas\Filter\Word\DashToCamelCase;
 use LogicException;
 
@@ -94,6 +93,7 @@ final class RunTasks
         if (preg_match('/^[a-z0-9](([_.]?|-{0,2})[a-z0-9]+)*$/', $moduleName) !== 1) {
             throw new LogicException(sprintf('%s is not a valid package name.', $moduleName));
         }
+
         return $moduleName;
     }
 
@@ -103,6 +103,7 @@ final class RunTasks
         if (preg_match('/^(?:[A-Z]{1}[a-zA-Z]*(?:\\\\(?![a-z]))?)+[a-zA-Z]$/', $namespace) !== 1) {
             throw new LogicException(sprintf('%s is not a valid package name.', $namespace));
         }
+
         return $namespace;
     }
 
@@ -143,6 +144,7 @@ final class RunTasks
                     'issues' => $gitHubUrl . '/issues',
                     'source' => $gitHubUrl,
                 ];
+
                 return $json;
             }
         );
@@ -164,6 +166,7 @@ final class RunTasks
                         ARRAY_FILTER_USE_KEY
                     );
                 }
+
                 return $json;
             }
         );
@@ -175,6 +178,7 @@ final class RunTasks
             static function (array $json): array {
                 // @phpstan-ignore-next-line
                 unset($json['scripts']['post-create-project-cmd']);
+
                 return $json;
             }
         );
@@ -196,6 +200,7 @@ final class RunTasks
                 $json['autoload-dev']['psr-4'][$devFunctional] = 'tests/functional';
                 $devUnit = sprintf('Kaiseki\\Test\\Unit\\WordPress\\%s\\', $this->moduleNamespace);
                 $json['autoload-dev']['psr-4'][$devUnit] = 'tests/unit';
+
                 return $json;
             }
         );
@@ -236,6 +241,7 @@ final class RunTasks
                 $composerArray = json_decode($contents, true);
                 $composerArray = $modify($composerArray);
                 $composerJson = json_encode($composerArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
                 return (string)preg_replace_callback(
                     '/^ +/m',
                     fn($m): string => str_repeat(' ', (int)(strlen($m[0]) / 2)),
@@ -278,7 +284,7 @@ final class RunTasks
         ];
 
         foreach (self::SEARCH_REPLACE_FILES as $filename) {
-            $this->modifyFile($filename, fn(string $contents): string  => str_replace($search, $replace, $contents));
+            $this->modifyFile($filename, fn(string $contents): string => str_replace($search, $replace, $contents));
         }
     }
 }

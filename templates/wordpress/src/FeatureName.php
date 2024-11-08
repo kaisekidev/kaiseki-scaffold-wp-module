@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kaiseki\WordPress\ModuleName;
+namespace Kaiseki\WordPress\%namespace%;
 
 use Kaiseki\WordPress\Hook\HookProviderInterface;
 
@@ -25,10 +25,12 @@ final class FeatureName implements HookProviderInterface
         if (trim($this->notice) === '') {
             return;
         }
+
         $notice = \Safe\sprintf(
             __('Kaiseki module %s is active', 'kaiseki'),
             $this->notice
         );
+
         ?>
         <div class="notice notice-success is-dismissible">
             <p><?= $notice ?></p>

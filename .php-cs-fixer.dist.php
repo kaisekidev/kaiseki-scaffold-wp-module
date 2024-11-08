@@ -7,8 +7,7 @@ use PhpCsFixer\Finder;
 
 $finder = Finder::create()
     ->in([
-        __DIR__ . '/src',
-        __DIR__ . '/tests'
+        __DIR__ . '/src'
     ]);
 
 return Config::get($finder);
