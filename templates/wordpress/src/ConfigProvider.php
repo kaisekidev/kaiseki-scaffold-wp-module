@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kaiseki\WordPress\%namespace%;
+namespace Kaiseki\WordPress\ScaffoldModule;
 
 final class ConfigProvider
 {
@@ -13,7 +13,7 @@ final class ConfigProvider
     {
         return [
             'package_name' => [
-                'feature_notice' => '%package_name_dash%',
+                'feature_notice' => 'wp-scaffold-module',
             ],
             'hook' => [
                 'provider' => [

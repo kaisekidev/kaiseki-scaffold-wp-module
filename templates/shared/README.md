@@ -1,11 +1,11 @@
-# kaiseki/%package_name_dash%
+# kaiseki/wp-scaffold-module
 
 Description
 
 ## Install
 
 ```bash
-composer require kaiseki/%package_name_dash%
+composer require kaiseki/wp-scaffold-module
 ```
 
 ## Usage

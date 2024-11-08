@@ -8,10 +8,10 @@
         convertDeprecationsToExceptions="true"
 >
     <testsuites>
-        <testsuite name="Kaiseki\Test\Unit\WordPress\%namespace%">
+        <testsuite name="Kaiseki\Test\Unit\WordPress\ScaffoldModule">
             <directory>tests/unit</directory>
         </testsuite>
-        <testsuite name="Kaiseki\Test\Functional\WordPress\%namespace%">
+        <testsuite name="Kaiseki\Test\Functional\WordPress\ScaffoldModule">
             <directory>tests/functional</directory>
         </testsuite>
     </testsuites>

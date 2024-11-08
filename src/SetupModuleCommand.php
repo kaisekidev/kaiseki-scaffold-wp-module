@@ -33,8 +33,11 @@ class SetupModuleCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->rootDir = realpath(__DIR__ . '/..');
+        var_dump($this->rootDir);
         $this->outputDir =  $this->rootDir . '/output';
-        mkdir($this->outputDir, 0755, true);
+        if (!is_dir($this->outputDir)) {
+            mkdir($this->outputDir, 0755, true);
+        }
 
         $question = $this->getHelper('question');
 
@@ -51,9 +54,9 @@ class SetupModuleCommand extends Command
 
         $this->copyFiles(array_merge($sharedFiles, $typeFiles));
 
-        $this->cleanUp();
-        $this->copyOutput();
-        $this->deleteDirectory($this->outputDir);
+//        $this->cleanUp();
+//        $this->copyOutput();
+//        $this->deleteDirectory($this->outputDir);
 
         return Command::SUCCESS;
     }
@@ -140,7 +143,7 @@ class SetupModuleCommand extends Command
     private function getOutputPath(string $path): string
     {
         $path = pathinfo($path, PATHINFO_DIRNAME);
-        $dir = $this->rootDir. '/templates/';
+        $dir = $this->rootDir. '/templates';
         $escapedDir = preg_quote($dir, '/');
         return preg_replace(
             '/'. $escapedDir . '\/(core|wordpress|shared)/',
