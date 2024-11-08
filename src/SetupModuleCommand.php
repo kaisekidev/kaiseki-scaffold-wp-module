@@ -39,6 +39,8 @@ class SetupModuleCommand extends Command
             ->askForRepoUrl($input, $output, $question)
             ->askForCopyrightHolder($input, $output, $question);
 
+        var_dump(__DIR__);
+
         $sharedFiles = $this->getAllFilesInDirectory(__DIR__ . '/../templates/shared');
         $typeFiles = $this->getAllFilesInDirectory(__DIR__ . '/../templates/' . $this->getTypeFolder());
 
