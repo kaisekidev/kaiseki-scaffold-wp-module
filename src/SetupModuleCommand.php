@@ -16,7 +16,7 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
 #[AsCommand(
-    name: 'setup-module',
+    name: 'app:setup-module',
 )]
 class SetupModuleCommand extends Command
 {
