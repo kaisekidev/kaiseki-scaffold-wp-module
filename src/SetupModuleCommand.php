@@ -70,19 +70,11 @@ class SetupModuleCommand extends Command
             }
 
             rmdir($dir . DIRECTORY_SEPARATOR . $name);
+            var_dump($dir . DIRECTORY_SEPARATOR . $name);
         }
+        return;
 
         $output = realpath(__DIR__ . '/../output');
-
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
-
-        foreach ($iterator as $fileInfo) {
-            if (!$fileInfo->isDir()) {
-                continue;
-            }
-
-            var_dump($fileInfo->getPathname());
-        }
 
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($output));
 
