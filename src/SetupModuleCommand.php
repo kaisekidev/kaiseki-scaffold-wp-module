@@ -33,11 +33,11 @@ class SetupModuleCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->rootDir = realpath(__DIR__ . '/..');
-        var_dump($this->rootDir);
         $this->outputDir =  $this->rootDir . '/output';
-        if (!is_dir($this->outputDir)) {
-            mkdir($this->outputDir, 0755, true);
-        }
+
+//        if (!is_dir($this->outputDir)) {
+//            mkdir($this->outputDir, 0755, true);
+//        }
 
         $question = $this->getHelper('question');
 
