@@ -8,6 +8,7 @@ use Laminas\Filter\Word\DashToCamelCase;
 use Laminas\Filter\Word\DashToUnderscore;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,7 +17,7 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
 #[AsCommand(
-    name: 'app:setup-module',
+    name: 'setup-module',
 )]
 class SetupModuleCommand extends Command
 {

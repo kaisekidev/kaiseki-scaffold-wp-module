@@ -68,7 +68,7 @@
   },
   "scripts": {
     "post-create-project-cmd": [
-      "php bin/console app:setup-module",
+      "php bin/console setup-module",
       "@composer update"
     ],
     "check": [
