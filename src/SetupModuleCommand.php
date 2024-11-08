@@ -54,9 +54,9 @@ class SetupModuleCommand extends Command
 
         $this->copyFiles(array_merge($sharedFiles, $typeFiles));
 
-//        $this->cleanUp();
-//        $this->copyOutput();
-//        $this->deleteDirectory($this->outputDir);
+        $this->cleanUp();
+        $this->copyOutput();
+        $this->deleteDirectory($this->outputDir);
 
         return Command::SUCCESS;
     }
