@@ -1,5 +1,5 @@
 {
-  "name": "kaiseki/wp-scaffold-module",
+  "name": "kaiseki/scaffold-wp-module",
   "type": "project",
   "description": "Scaffold a kaiseki module",
   "keywords": [
