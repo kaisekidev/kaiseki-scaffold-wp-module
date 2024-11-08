@@ -69,7 +69,7 @@ class SetupModuleCommand extends Command
                 continue;
             }
 
-            rmdir($dir . DIRECTORY_SEPARATOR . $name);
+            $this->deleteDirectory($dir . DIRECTORY_SEPARATOR . $name);
             var_dump($dir . DIRECTORY_SEPARATOR . $name);
         }
         return;
@@ -94,6 +94,26 @@ class SetupModuleCommand extends Command
         }
 
         rmdir($output);
+    }
+
+    private function deleteDirectory(string $path): bool
+    {
+        if (!is_dir($path)) {
+            return false;
+        }
+
+        $iterator = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
+        $files = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::CHILD_FIRST);
+
+        foreach ($files as $fileinfo) {
+            if ($fileinfo->isDir()) {
+                $this->deleteDirectory($fileinfo->getRealPath());
+            } else {
+                unlink($fileinfo->getRealPath());
+            }
+        }
+
+        return rmdir($path);
     }
 
     private function copyFiles(array $paths): void
