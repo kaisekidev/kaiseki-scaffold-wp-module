@@ -69,7 +69,7 @@ class SetupModuleCommand extends Command
                 continue;
             }
 
-            rmDir($dir . DIRECTORY_SEPARATOR . $name);
+            rmdir($dir . DIRECTORY_SEPARATOR . $name);
         }
 
         $output = realpath(__DIR__ . '/../output');
