@@ -23,6 +23,7 @@ class SetupModuleCommand extends Command
 {
     private TypeEnum $type;
     private string $rootDir;
+    private string $outputDir;
     private string $moduleName;
     private string $configBaseKey;
     private string $namespace;
@@ -43,8 +44,8 @@ class SetupModuleCommand extends Command
             ->askForRepoUrl($input, $output, $question)
             ->askForCopyrightHolder($input, $output, $question);
 
-        $sharedFiles = $this->getAllFilesInDirectory(__DIR__ . '/../templates/shared');
-        $typeFiles = $this->getAllFilesInDirectory(__DIR__ . '/../templates/' . $this->getTypeFolder());
+        $sharedFiles = $this->getAllFilesInDirectory($this->rootDir . '/templates/shared');
+        $typeFiles = $this->getAllFilesInDirectory($this->rootDir . '/templates/' . $this->getTypeFolder());
 
         $this->copyFiles(array_merge($sharedFiles, $typeFiles));
 
@@ -137,11 +138,11 @@ class SetupModuleCommand extends Command
     private function getOutputPath(string $path): string
     {
         $path = pathinfo($path, PATHINFO_DIRNAME);
-        $dir = realpath(__DIR__ . '/../templates/');
+        $dir = $this->rootDir. '/templates/';
         $escapedDir = preg_quote($dir, '/');
         return preg_replace(
             '/'. $escapedDir . '\/(core|wordpress|shared)/',
-            realpath(__DIR__ . '/..') . '/output',
+            $this->rootDir . '/output',
             $path
         );
     }
