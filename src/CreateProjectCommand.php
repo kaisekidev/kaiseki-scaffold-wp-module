@@ -42,6 +42,7 @@ class CreateProjectCommand extends Command
 
         return Command::SUCCESS;
     }
+
     private function copyFiles(array $paths): void
     {
         foreach ($paths as $path) {
@@ -225,7 +226,7 @@ class CreateProjectCommand extends Command
             $default
         );
 
-        $this->copyrightHolder = $questionHelper->ask($input, $output, $question);
+        $this->copyrightHolder = (string)$questionHelper->ask($input, $output, $question);
 
         $output->writeln('Copyright Holder: ' . $this->repoUrl);
 
