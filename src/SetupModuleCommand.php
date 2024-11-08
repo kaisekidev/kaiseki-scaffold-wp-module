@@ -193,8 +193,6 @@ class SetupModuleCommand extends Command
 
         $this->moduleName = $questionHelper->ask($input, $output, $question);
 
-        $output->writeln('Module name: ' . $this->moduleName);
-
         return $this;
     }
 
@@ -215,8 +213,6 @@ class SetupModuleCommand extends Command
         );
 
         $this->configBaseKey = $questionHelper->ask($input, $output, $question);
-
-        $output->writeln('Config base key: ' . $this->configBaseKey);
 
         return $this;
     }
@@ -249,8 +245,6 @@ class SetupModuleCommand extends Command
 
         $this->namespace = $questionHelper->ask($input, $output, $question);
 
-        $output->writeln('Namespace: ' . $this->namespace);
-
         return $this;
     }
 
@@ -280,8 +274,6 @@ class SetupModuleCommand extends Command
 
         $this->repoUrl = $questionHelper->ask($input, $output, $question);
 
-        $output->writeln('Repository URL: ' . $this->repoUrl);
-
         return $this;
     }
 
@@ -301,8 +293,6 @@ class SetupModuleCommand extends Command
         );
 
         $this->copyrightHolder = (string)$questionHelper->ask($input, $output, $question);
-
-        $output->writeln('Copyright Holder: ' . $this->repoUrl);
 
         return $this;
     }
