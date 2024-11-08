@@ -35,10 +35,6 @@ class SetupModuleCommand extends Command
         $this->rootDir = realpath(__DIR__ . '/..');
         $this->outputDir =  $this->rootDir . '/output';
 
-//        if (!is_dir($this->outputDir)) {
-//            mkdir($this->outputDir, 0755, true);
-//        }
-
         $question = $this->getHelper('question');
 
         $this
@@ -49,24 +45,14 @@ class SetupModuleCommand extends Command
             ->askForRepoUrl($input, $output, $question)
             ->askForCopyrightHolder($input, $output, $question);
 
-        $output->writeln([
-            'Module setup',
-            '============',
-            'Type: ' . ($this->type === TypeEnum::WORDPRESS ? 'WordPress' : 'Core'),
-            'Module name: ' . $this->moduleName,
-            'Config base key: ' . $this->configBaseKey,
-            'Namespace: ' . $this->namespace,
-            'Repository URL: ' . $this->repoUrl,
-        ]);
-
         $sharedFiles = $this->getAllFilesInDirectory($this->rootDir . '/templates/shared');
         $typeFiles = $this->getAllFilesInDirectory($this->rootDir . '/templates/' . $this->getTypeFolder());
 
         $this->copyFiles(array_merge($sharedFiles, $typeFiles));
 
-//        $this->cleanUp();
-//        $this->copyOutput();
-//        $this->deleteDirectory($this->outputDir);
+        $this->cleanUp();
+        $this->copyOutput();
+        $this->deleteDirectory($this->outputDir);
 
         return Command::SUCCESS;
     }

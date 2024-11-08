@@ -1,9 +1,9 @@
 {
-  "name": "kaiseki/wp-scaffold-module",
+  "name": "kaiseki/%package_name_dash%",
   "type": "library",
   "description": "",
   "license": "MIT",
-  "homepage": "https://github.com/kaisekidev/wp-scaffold-module",
+  "homepage": "%repo_url%",
   "authors": [
     {
       "name": "Kaiseki",
@@ -13,8 +13,8 @@
     }
   ],
   "support": {
-    "issues": "https://github.com/kaisekidev/wp-scaffold-module/issues",
-    "source": "https://github.com/kaisekidev/wp-scaffold-module"
+    "issues": "%repo_url%/issues",
+    "source": "%repo_url%"
   },
   "require": {
     "php": ">=8.2",
@@ -45,13 +45,13 @@
   },
   "autoload": {
     "psr-4": {
-      "Kaiseki\\WordPress\\ScaffoldModule\\": "src"
+      "Kaiseki\\WordPress\\%namespace%\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Kaiseki\\Test\\Functional\\WordPress\\ScaffoldModule\\": "tests/functional",
-      "Kaiseki\\Test\\Unit\\WordPress\\ScaffoldModule\\": "tests/unit"
+      "Kaiseki\\Test\\Functional\\WordPress\\%namespace%\\": "tests/functional",
+      "Kaiseki\\Test\\Unit\\WordPress\\%namespace%\\": "tests/unit"
     }
   },
   "repositories": [

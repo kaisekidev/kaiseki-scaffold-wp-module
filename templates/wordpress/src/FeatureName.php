@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kaiseki\WordPress\ScaffoldModule;
+namespace Kaiseki\WordPress\%namespace%;
 
 use Kaiseki\WordPress\Hook\HookProviderInterface;
 

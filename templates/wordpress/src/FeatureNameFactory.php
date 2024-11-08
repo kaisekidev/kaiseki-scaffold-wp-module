@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kaiseki\WordPress\ScaffoldModule;
+namespace Kaiseki\WordPress\%namespace%;
 
 use Kaiseki\Config\Config;
 use Psr\Container\ContainerInterface;
@@ -14,7 +14,7 @@ final class FeatureNameFactory
         $config = Config::fromContainer($container);
 
         return new FeatureName(
-            $config->string('scaffold_module.feature_notice')
+            $config->string('%config_base_key%;.feature_notice')
         );
     }
 }
