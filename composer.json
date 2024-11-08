@@ -68,7 +68,7 @@
   },
   "scripts": {
     "post-create-project-cmd": [
-      "php bin/console setup-module",
+      "Kaiseki\\ScaffoldModule\\SetupModuleCommand",
       "@composer update"
     ],
     "check": [
