@@ -50,9 +50,9 @@ class SetupModuleCommand extends Command
 
         $this->copyFiles(array_merge($sharedFiles, $typeFiles));
 
-        $this->cleanUp();
-        $this->copyOutput();
-        $this->deleteDirectory($this->outputDir);
+//        $this->cleanUp();
+//        $this->copyOutput();
+//        $this->deleteDirectory($this->outputDir);
 
         return Command::SUCCESS;
     }
@@ -68,6 +68,7 @@ class SetupModuleCommand extends Command
 
             $destination = str_replace($this->outputDir, $this->rootDir, $fileInfo->getPathname());
             $destinationDir = pathinfo($destination, PATHINFO_DIRNAME);
+            var_dump($destinationDir);
 
             if (!is_dir($destinationDir)) {
                 mkdir($destinationDir, 0755, true);
